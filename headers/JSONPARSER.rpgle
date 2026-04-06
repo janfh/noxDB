@@ -1574,6 +1574,21 @@ Dcl-PR json_writeJsonStmf extproc(*CWIDEN : 'jx_WriteJsonStmf');
 End-PR;
 
 ///
+// Write JSON to socket
+//
+// Serializes the passed object tree as compact JSON and sends it
+// directly to an open socket descriptor.
+//
+// @param (input) Node
+// @param (input) Socket descriptor (from accept() or socket())
+// @return 0 on success, negative on send error
+///
+Dcl-PR json_writeJsonToSocket int(10) extproc(*CWIDEN : 'jx_WriteJsonToSocket');
+  node   pointer value;
+  sockfd int(10) value;
+End-PR;
+
+///
 // To JSON string
 //
 // Returns the passed object tree as a JSON string.

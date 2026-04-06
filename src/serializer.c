@@ -16,6 +16,7 @@
 
 
 #include <sys/stat.h>
+#include <sys/socket.h>
 #include "ostypes.h"
 #include "sndpgmmsg.h"
 #include "trycatch.h"
@@ -273,6 +274,40 @@ static LONG jx_fileWriter  (PSTREAM p , PUCHAR buf , ULONG len)
 	fwrite (temp  , 1 , outlen , pjWrite->outFile);
 	free (temp);
 	return rc;
+}
+
+// ----------------------------------------------------------------------------
+static LONG jx_socketWriter (PVOID pb, PUCHAR buf, ULONG len)
+{
+	PSTREAM pStream = (PSTREAM) pb;
+	int sockfd = *(int *) pStream->output;
+	LONG sent = 0;
+
+	while (sent < (LONG) len) {
+		LONG rc = send(sockfd, buf + sent, len - sent, 0);
+		if (rc < 0) return rc;
+		sent += rc;
+	}
+	return sent;
+}
+// ----------------------------------------------------------------------------
+int jx_WriteJsonToSocket (PJXNODE pNode, int sockfd)
+{
+	PSTREAM pStream;
+	PJWRITE pjWrite;
+
+	pStream = stream_new(4096);
+	pStream->writer = jx_socketWriter;
+	pStream->output = &sockfd;
+	pStream->handle = pjWrite = jx_newWriter();
+	pjWrite->doTrim = true;
+	pjWrite->maxSize = 0x7FFFFFFF;
+
+	jx_AsJsonStream(pNode, pStream);
+	stream_delete(pStream);
+	jx_deleteWriter(pjWrite);
+
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
