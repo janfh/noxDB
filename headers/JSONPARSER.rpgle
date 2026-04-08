@@ -1589,6 +1589,24 @@ Dcl-PR json_writeJsonToSocket int(10) extproc(*CWIDEN : 'jx_WriteJsonToSocket');
 End-PR;
 
 ///
+// Write JSON to socket using HTTP chunked transfer encoding
+//
+// Serializes the passed object tree as compact JSON and sends it
+// to an open socket as HTTP chunked transfer encoding. Each internal
+// stream buffer is sent as one chunk, followed by the terminal
+// zero-length chunk (0\r\n\r\n).
+//
+// @param (input) Node
+// @param (input) Socket descriptor (from accept() or socket())
+// @return 0 on success, negative on send error
+///
+Dcl-PR json_writeJsonToSocketChunked int(10)
+       extproc(*CWIDEN : 'jx_WriteJsonToSocketChunked');
+  node   pointer value;
+  sockfd int(10) value;
+End-PR;
+
+///
 // To JSON string
 //
 // Returns the passed object tree as a JSON string.

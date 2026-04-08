@@ -280,15 +280,56 @@ static LONG jx_fileWriter  (PSTREAM p , PUCHAR buf , ULONG len)
 static LONG jx_socketWriter (PVOID pb, PUCHAR buf, ULONG len)
 {
 	PSTREAM pStream = (PSTREAM) pb;
-	int sockfd = *(int *) pStream->output;
+	return socketSendAll(*(int *) pStream->output, buf, len);
+}
+// ----------------------------------------------------------------------------
+static LONG socketSendAll (int sockfd, PUCHAR buf, ULONG len)
+{
 	LONG sent = 0;
-
 	while (sent < (LONG) len) {
 		LONG rc = send(sockfd, buf + sent, len - sent, 0);
 		if (rc < 0) return rc;
 		sent += rc;
 	}
 	return sent;
+}
+// ----------------------------------------------------------------------------
+static LONG jx_httpChunkWriter (PVOID pb, PUCHAR buf, ULONG len)
+{
+	PSTREAM pStream = (PSTREAM) pb;
+	int     sockfd  = *(int *) pStream->output;
+	UCHAR   header[16];
+	LONG    rc;
+
+	if (len == 0) return 0;
+	snprintf((char *) header, sizeof(header), "%X\r\n", (unsigned) len);
+	rc = socketSendAll(sockfd, header, strlen((char *) header));
+	if (rc < 0) return rc;
+	rc = socketSendAll(sockfd, buf, len);
+	if (rc < 0) return rc;
+	return socketSendAll(sockfd, (PUCHAR) "\r\n", 2);
+}
+// ----------------------------------------------------------------------------
+int jx_WriteJsonToSocketChunked (PJXNODE pNode, int sockfd)
+{
+	PSTREAM pStream;
+	PJWRITE pjWrite;
+
+	pStream         = stream_new(4096);
+	pStream->writer = jx_httpChunkWriter;
+	pStream->output = &sockfd;
+	pStream->handle = pjWrite = jx_newWriter();
+	pjWrite->doTrim  = true;
+	pjWrite->maxSize = 0x7FFFFFFF;
+
+	jx_AsJsonStream(pNode, pStream);
+	stream_delete(pStream);               // flushes last partial chunk
+	jx_deleteWriter(pjWrite);
+
+	// terminal chunk
+	socketSendAll(sockfd, (PUCHAR) "0\r\n\r\n", 5);
+
+	return 0;
 }
 // ----------------------------------------------------------------------------
 int jx_WriteJsonToSocket (PJXNODE pNode, int sockfd)

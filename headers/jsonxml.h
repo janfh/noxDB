@@ -324,6 +324,7 @@ LONG jx_fileWriter  (PSTREAM pStream , PUCHAR buf , ULONG len);
 LONG jx_memWriter  (PSTREAM pStream, PUCHAR buf , ULONG len);
 void  jx_AsJsonStream (PJXNODE pNode, PSTREAM pStream);
 int   jx_WriteJsonToSocket (PJXNODE pNode, int sockfd);
+int   jx_WriteJsonToSocketChunked (PJXNODE pNode, int sockfd);
 void  jsonStreamPrintNode (PJXNODE pNode, PSTREAM pStream, SHORT level);
 void  jsonStreamPrintValue   (PJXNODE pNode, PSTREAM pStream);
 void  jsonStreamPrintArray (PJXNODE pParent, PSTREAM pStream, SHORT level);
