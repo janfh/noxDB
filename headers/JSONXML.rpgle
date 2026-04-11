@@ -1635,7 +1635,8 @@ End-PR;
 //
 // @param (input) Node
 // @param (output) Buffer
-// @param (input) Buffer length (in bytes)
+// @param (input) Buffer length (in bytes) - pass *OMIT to use the default size (~2GB)
+// @param (input) CCSID - if specified, the JSON string is converted to the given CCSID
 // @return Length of the serialized JSON string
 //
 // @info If no buffer length is passed the procedure will assume the default
@@ -1644,7 +1645,8 @@ End-PR;
 Dcl-PR jx_asJsonTextMem uns(10) extproc(*CWIDEN : 'jx_AsJsonTextMem');
   node pointer value;
   buffer pointer value;
-  bufferSize uns(10) value options(*nopass);
+  bufferSize uns(10) value options(*omit : *nopass);
+  ccsid int(10) value options(*nopass);
 End-PR;
 
 ///

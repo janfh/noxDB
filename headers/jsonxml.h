@@ -314,7 +314,7 @@ typedef struct _JXPARMMETA  {
 LONG xlateMem  (iconv_t xid , PUCHAR out , PUCHAR in, LONG len);
 void jx_WriteJsonStmf (PJXNODE pNode, PUCHAR FileName, int Ccsid, LGL trimOut, PJXNODE options);
 VARCHAR jx_AsJsonText (PJXNODE pNode);
-LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP);
+LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP, int ccsid);
 #pragma descriptor ( void jx_AsJsonTextMem                     (void))
 
 LONG jx_AsXmlTextMem (PJXNODE pNode, PUCHAR buf);
@@ -577,7 +577,7 @@ BOOL jx_Lgl2Bool  (LGL  in);
 void jx_Close(PJXNODE * pNode);
 
 void    jx_AsJsonTextList (PJXNODE pNode, PJWRITE pJwrite);
-LONG    jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf, ULONG maxSize);
+LONG    jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf, ULONG maxSize, int ccsid);
 VARCHAR jx_AsJsonText(PJXNODE pNode);
 LGL     jx_IsJson (PJXNODE pNode);
 BOOL    jx_HasMore(PJXNODE pNode);

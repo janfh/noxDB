@@ -242,6 +242,29 @@ void  jx_AsJsonStream (PJXNODE pNode, PSTREAM pStream)
 static LONG jx_memWriter  (PSTREAM p , PUCHAR buf , ULONG len)
 {
 	PJWRITE pjWrite = p->handle;
+
+	if (pjWrite->iconv.return_value != -1) {
+		int outlen = 4 * len;
+		size_t inbytesleft = len, outbytesleft = outlen;
+		PUCHAR temp = malloc(outlen);
+		PUCHAR input = buf;
+		PUCHAR output = temp;
+		iconv(pjWrite->iconv, &input, &inbytesleft, &output, &outbytesleft);
+		outlen = output - temp;
+		ULONG newLen = pjWrite->bufLen + outlen;
+		if (newLen > pjWrite->maxSize) {
+			ULONG restlen = pjWrite->maxSize - pjWrite->bufLen;
+			memcpy(pjWrite->buf + pjWrite->bufLen, temp, restlen);
+			pjWrite->bufLen = pjWrite->maxSize;
+			free(temp);
+			return pjWrite->bufLen;
+		}
+		memcpy(pjWrite->buf + pjWrite->bufLen, temp, outlen);
+		pjWrite->bufLen += outlen;
+		free(temp);
+		return pjWrite->bufLen;
+	}
+
 	ULONG newLen =  pjWrite->bufLen + len;
 	if ( newLen  > pjWrite->maxSize) {
 		ULONG restlen = pjWrite->maxSize - pjWrite->bufLen;
@@ -277,12 +300,13 @@ static LONG jx_fileWriter  (PSTREAM p , PUCHAR buf , ULONG len)
 
 /* ---------------------------------------------------------------------------
 	 --------------------------------------------------------------------------- */
-LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP)
+LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP, int ccsid)
 {
 	PNPMPARMLISTADDRP pParms = _NPMPARMLISTADDR();
 	PSTREAM  pStream;
 	LONG     len;
 	PJWRITE  pjWrite;
+	BOOL     doConvert;
 
 
 	if (pNode == NULL) return 0;
@@ -290,6 +314,8 @@ LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP)
 		strcpy (buf, (PUCHAR) pNode);
 		return strlen(buf);
 	}
+
+	doConvert = pParms->OpDescList && pParms->OpDescList->NbrOfParms >= 4;
 
 	pStream = stream_new (4096);
 	pStream->writer  = jx_memWriter;
@@ -299,10 +325,17 @@ LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP)
 	pjWrite->maxSize =   pParms->OpDescList == NULL
 					|| (pParms->OpDescList && pParms->OpDescList->NbrOfParms >= 3) ? maxLenP : MEMMAX;
 
+	if (doConvert) {
+		pjWrite->iconv = XlateOpenDescriptor(OutputCcsid, ccsid, false);
+	}
+
 	jx_AsJsonStream (pNode , pStream);
-	len = pStream->totalSize;
+	len = doConvert ? pjWrite->bufLen : pStream->totalSize;
 	stream_putc   (pStream,'\0');
 	stream_delete (pStream);
+	if (doConvert) {
+		iconv_close(pjWrite->iconv);
+	}
 	jx_deleteWriter(pjWrite);
 	return  len;
 
@@ -352,6 +385,7 @@ PJWRITE jx_newWriter ()
 {
 	PJWRITE pjWrite = malloc (sizeof(JWRITE));
 	memset(pjWrite , 0 , sizeof(JWRITE) - sizeof(pjWrite->filler));
+	pjWrite->iconv.return_value = -1;
 	#pragma convert(1252)
 	XlateBufferQ(&pjWrite->braBeg , "[]{}\\\"" , 6, 1252 ,0 ); ;
 	#pragma convert(0)
