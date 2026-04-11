@@ -315,7 +315,7 @@ LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP, int ccsid)
 		return strlen(buf);
 	}
 
-	doConvert = pParms->OpDescList && pParms->OpDescList->NbrOfParms >= 4;
+	doConvert = ccsid != -1 && (pParms->OpDescList == NULL || pParms->OpDescList->NbrOfParms >= 4);
 
 	pStream = stream_new (4096);
 	pStream->writer  = jx_memWriter;
@@ -344,7 +344,7 @@ LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP, int ccsid)
 	 --------------------------------------------------------------------------- */
 void jx_AsJsonText16M ( PVARCHAR_16M result , PJXNODE pNode)
 {
-	result->Length = jx_AsJsonTextMem (pNode, result->String , sizeof(VARCHAR_16M)-4);
+	result->Length = jx_AsJsonTextMem (pNode, result->String , sizeof(VARCHAR_16M)-4, -1);
 }
 /* ---------------------------------------------------------------------------
 	 --------------------------------------------------------------------------- */
@@ -375,7 +375,7 @@ PSTREAM jx_Stream  (PJXNODE pNode)
 VARCHAR jx_AsJsonText (PJXNODE pNode)
 {
 	 VARCHAR  res;
-	 res.Length = jx_AsJsonTextMem ( pNode ,  res.String, sizeof(res.String));
+	 res.Length = jx_AsJsonTextMem ( pNode ,  res.String, sizeof(res.String), -1);
 	 return res;
 }
 /* ---------------------------------------------------------------------------

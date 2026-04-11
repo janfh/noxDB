@@ -122,7 +122,7 @@ void jx_joblog (PUCHAR msg , ...)
    if (msg == null){
       return;
    } else if ( *msg == NODESIG) {
-      len = jx_AsJsonTextMem (((PJXNODE) msg) , mem , 512);
+      len = jx_AsJsonTextMem (((PJXNODE) msg) , mem , 512, -1);
       QMHSNDPM ("CPF9898", "QCPFMSG   *LIBL     ",  mem  , len  , "*INFO     ", "jx_joblog                "  ,
                stackcount, msgkey , &zeroval);
    } else {
@@ -147,8 +147,8 @@ void jx_joblog (PUCHAR msg)
       int len1, len2;
       UCHAR mem [999999];
       memset(mem , ' ' ,80);
-      len1 = jx_AsJsonTextMem (((PJXNODE) msg) , mem , 80);
-      len2 = jx_AsJsonTextMem (((PJXNODE) msg) , &mem[80] , 9900);
+      len1 = jx_AsJsonTextMem (((PJXNODE) msg) , mem , 80, -1);
+      len2 = jx_AsJsonTextMem (((PJXNODE) msg) , &mem[80] , 9900, -1);
       if (len2 > 9900) len2 = 9900;
       QMHSNDPM ("XXX9999", "QCPFMSG   *LIBL     ",  mem  , 80 + len2  , "*INFO     ", "*PGMBDY                    " ,
                stackcount, msgkey , &zeroval);
@@ -204,7 +204,7 @@ PJXNODE jx_traceNode (PUCHAR text, PJXNODE pNode)
       jx_WriteJsonStmf (pNode, filename , 1208, OFF, NULL);
    } else if (debugger == 2) {
       UCHAR temp [65536];
-      int l = jx_AsJsonTextMem (pNode , temp , sizeof(temp));
+      int l = jx_AsJsonTextMem (pNode , temp , sizeof(temp), -1);
       temp [l] = 0;
       puts (text);
       puts (temp);
@@ -2929,11 +2929,11 @@ void jx_CopyValueByNameVC (PVARCHAR pRes, PJXNODE pNodeRoot, PUCHAR Name, PUCHAR
    } else if (joinString &&  pNode->type == ARRAY) {
       jx_joinArray2vc (pRes , pNode , delimiter);
       if (pRes->Length == 0) { // No data found when joining arrays as string - Now serialize it as usual
-         pRes->Length  = jx_AsJsonTextMem (pNode , pRes->String , 32760);
+         pRes->Length  = jx_AsJsonTextMem (pNode , pRes->String , 32760, -1);
       }
 
    } else if (pNode->type == OBJECT ||  pNode->type == ARRAY ) {
-      pRes->Length  = jx_AsJsonTextMem (pNode , pRes->String, 32760);
+      pRes->Length  = jx_AsJsonTextMem (pNode , pRes->String, 32760, -1);
 
    } else if (pNode->Value) {
       str2vcXlate(pNode, pRes , pNode->Value);

@@ -3399,7 +3399,7 @@ SHORT  doInsertOrUpdate(
          if (pNode->type == ARRAY ||  pNode->type == OBJECT) {
             freeme = true;
             value = memAlloc(pColData->collen);
-            lbytes  = jx_AsJsonTextMem (pNode , value ,  pColData->collen );
+            lbytes  = jx_AsJsonTextMem (pNode , value ,  pColData->collen, -1 );
             value [lbytes] = '\0';
          } else {
             freeme = false;
@@ -3521,7 +3521,7 @@ SHORT  doInsertOrUpdate(
 
          if (pNode->type == ARRAY ||  pNode->type == OBJECT) {
             value = valArr[valArrIx++] = memAlloc(Col.collen);
-            realLength = jx_AsJsonTextMem (pNode , value,  Col.collen );
+            realLength = jx_AsJsonTextMem (pNode , value,  Col.collen, -1 );
             value [realLength] = '\0';
          } else {
             value = jx_GetNodeValuePtr  (pNode , NULL);
