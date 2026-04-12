@@ -244,24 +244,21 @@ static LONG jx_memWriter  (PSTREAM p , PUCHAR buf , ULONG len)
 	PJWRITE pjWrite = p->handle;
 
 	if (pjWrite->iconv.return_value != -1) {
-		int outlen = 4 * len;
-		size_t inbytesleft = len, outbytesleft = outlen;
-		PUCHAR temp = malloc(outlen);
+		UCHAR temp[len * 4];
+		size_t inbytesleft = len, outbytesleft = len * 4;
 		PUCHAR input = buf;
 		PUCHAR output = temp;
 		iconv(pjWrite->iconv, &input, &inbytesleft, &output, &outbytesleft);
-		outlen = output - temp;
+		ULONG outlen = output - temp;
 		ULONG newLen = pjWrite->bufLen + outlen;
 		if (newLen > pjWrite->maxSize) {
 			ULONG restlen = pjWrite->maxSize - pjWrite->bufLen;
 			memcpy(pjWrite->buf + pjWrite->bufLen, temp, restlen);
 			pjWrite->bufLen = pjWrite->maxSize;
-			free(temp);
 			return pjWrite->bufLen;
 		}
 		memcpy(pjWrite->buf + pjWrite->bufLen, temp, outlen);
 		pjWrite->bufLen += outlen;
-		free(temp);
 		return pjWrite->bufLen;
 	}
 
