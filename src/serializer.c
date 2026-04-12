@@ -315,7 +315,7 @@ LONG jx_AsJsonTextMem (PJXNODE pNode, PUCHAR buf , ULONG maxLenP, int ccsid)
 		return strlen(buf);
 	}
 
-	doConvert = ccsid != -1 && (pParms->OpDescList == NULL || pParms->OpDescList->NbrOfParms >= 4);
+	doConvert = pParms->OpDescList != NULL && pParms->OpDescList->NbrOfParms >= 4 && ccsid != -1;
 
 	pStream = stream_new (4096);
 	pStream->writer  = jx_memWriter;
