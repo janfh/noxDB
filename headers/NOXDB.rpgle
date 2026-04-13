@@ -1645,7 +1645,7 @@ End-PR;
 Dcl-PR json_asJsonTextMem uns(10) extproc(*CWIDEN : 'jx_AsJsonTextMem');
   node pointer value;
   buffer pointer value;
-  bufferSize uns(10) value options(*omit : *nopass);
+  bufferSize uns(10) value options(*nopass);
   ccsid int(10) value options(*nopass);
 End-PR;
 
@@ -4645,7 +4645,7 @@ End-PR;
 Dcl-PR xml_asJsonTextMem uns(10) extproc(*CWIDEN : 'jx_AsJsonTextMem');
   node pointer value;
   buffer pointer value;
-  bufferSize uns(10) value options(*omit : *nopass);
+  bufferSize uns(10) value options(*nopass);
   ccsid int(10) value options(*nopass);
 End-PR;
 
