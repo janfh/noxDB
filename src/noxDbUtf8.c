@@ -3307,13 +3307,17 @@ PNOXNODE  nox_SetTimeStampByNameVC (PNOXNODE pNode, PLVARCHAR  Name, TIMESTAMP V
    }
 
    substr(s , (PUCHAR) &Value  , sizeof(TIMESTAMP));
-   return nox_SetValueByName(pNode , plvc2str(Name) , stre2a(s,s), NOX_VALUE );
+   stre2a(s,s);
+   if (isoTimestamp == ON) ts_ibm2iso8601(s);
+   return nox_SetValueByName(pNode , plvc2str(Name) , s, NOX_VALUE );
 }
 PNOXNODE  nox_TimeStamp (TIMESTAMP Value )
 {
    UCHAR  s [32];
    substr(s , (PUCHAR) &Value  , sizeof(TIMESTAMP));
-   return NewNode (NULL, stre2a(s,s), NOX_VALUE );
+   stre2a(s,s);
+   if (isoTimestamp == ON) ts_ibm2iso8601(s);
+   return NewNode (NULL, s, NOX_VALUE );
 }
 /* -------------------------------------------------------------
     Set decimal  by name
