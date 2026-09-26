@@ -72,6 +72,15 @@ cd /prj/noxDB
 gmake clean release
 ```
 
+### ISO 8601 timestamp formatting
+
+By default, noxDB serializes IBM i timestamps in the native format `YYYY-MM-DD-HH.MM.SS.uuuuuu`.
+To make ISO 8601 format `YYYY-MM-DDTHH:MM:SS.uuuuuu` the default at build time, pass `ISO_TIMESTAMP=1` to gmake:
+
+```
+gmake ISO_TIMESTAMP=1
+```
+
 ### Notes
 This branch merges the "EBCDIC" legacy branch (previously called master),
 with the code in UTF-8-Consolidated branch, aimed at making noxDB fully compatible with UTF-8 while also cleaning up the codebase.
