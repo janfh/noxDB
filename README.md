@@ -72,13 +72,18 @@ cd /prj/noxDB
 gmake clean release
 ```
 
-### ISO 8601 timestamp formatting
+### Build options
 
-By default, noxDB serializes IBM i timestamps in the native format `YYYY-MM-DD-HH.MM.SS.uuuuuu`.
-To make ISO 8601 format `YYYY-MM-DDTHH:MM:SS.uuuuuu` the default at build time, pass `ISO_TIMESTAMP=1` to gmake:
+| Option | Default | Description |
+|---|---|---|
+| `BIN_LIB` | `NOXDBUTF8` | Target library for the service program and objects |
+| `TARGET_RELEASE` | `V7R3M0` | Minimum IBM i release to target |
+| `ISO_TIMESTAMP` | *(off)* | Set to `1` to default timestamps to ISO 8601 format (`YYYY-MM-DDTHH:MM:SS.uuuuuu`) instead of the IBM i native format (`YYYY-MM-DD-HH.MM.SS.uuuuuu`) |
+
+Options can be combined:
 
 ```
-gmake ISO_TIMESTAMP=1
+gmake BIN_LIB=MYLIB TARGET_RELEASE=V7R4M0 ISO_TIMESTAMP=1
 ```
 
 ### Notes
@@ -104,8 +109,8 @@ Also notice that the **main** branch (the UTF-8 stuff) has all the new features 
    pCustomer1 = nox_Object(
       'id'         : nox_Int  (12345):
       'name'       : nox_Str  ('System & Metod A/S'):
-      'street'     : nox_Str  ('Håndværkersvinget 8'):
-      'city'       : nox_Str  ('Hørsholm'):
+      'street'     : nox_Str  ('Hï¿½ndvï¿½rkersvinget 8'):
+      'city'       : nox_Str  ('Hï¿½rsholm'):
       'greeting'   : nox_Str  (u'4f605978'): // "Ni hau" in unicode
       'creditLimit': nox_Dec  (76543.21):
       'createdDate': nox_Date (%date()):
