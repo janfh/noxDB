@@ -1562,6 +1562,21 @@ Dcl-PR nox_WriteJsonStmf  extproc(*CWIDEN : 'nox_WriteJsonStmf');
 End-PR;
 
 ///
+// Write JSON to file descriptor
+//
+// Streams the object tree as JSON directly to an open file descriptor
+// (e.g. a socket returned by accept()) without buffering the full output.
+// Data is written in 4 KB chunks as the serializer produces it.
+//
+// @param (input) Node
+// @param (input) File descriptor (e.g. from accept() or open())
+///
+Dcl-PR nox_WriteJsonFd extproc(*CWIDEN : 'nox_WriteJsonFd');
+  pNode          Pointer    value;
+  fd             Int(10)    value;
+End-PR;
+
+///
 // To JSON string
 //
 // Returns the passed object tree as a JSON string.
