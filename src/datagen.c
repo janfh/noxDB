@@ -37,8 +37,6 @@
 // NOTE !!! ALL constants are UTF-8
 #pragma convert(1252)
 
-typedef void (*NOX_DATAGEN)();
-
 extern iconv_t xlate_1200_to_1208;
 
 // ---------------------------------------------------------------------------
