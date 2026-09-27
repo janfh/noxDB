@@ -796,6 +796,21 @@ Dcl-PR nox_DataGen pointer(*proc) extproc(*CWIDEN : 'nox_DataGen');
   Options  pointer value options(*string : *nopass);
 End-PR;
 
+///
+// DATA-GEN callback that streams JSON directly to a file descriptor
+//
+// Returns a callback procedure pointer for use with the DATA-GEN opcode.
+// JSON is serialized and written in 4 KB chunks as DATA-GEN fires events
+// no intermediate node tree is built. The stream is flushed and closed
+// automatically when DATA-GEN completes. The caller retains ownership of fd.
+//
+// @param (input) File descriptor (e.g. 1 for stdout, or a connected socket)
+// @return Procedure pointer for use with %DATA()
+///
+Dcl-PR nox_DataGenFd pointer(*proc) extproc(*CWIDEN : 'nox_DataGenFd');
+  fd       Int(10) value;
+End-PR;
+
 
 
 ///

@@ -499,6 +499,8 @@ void nox_WriteJsonStmf (
 
 void nox_WriteJsonFd (PNOXNODE pNode, int fd);
 
+NOX_DATAGEN nox_DataGenFd (int fd);
+
 void nox_WriteCsvStmf (
    PNOXNODE pNode, PUCHAR FileName, int Ccsid, LGL trimOut, PNOXNODE options);
 #pragma descriptor ( void nox_WriteCsvStmf      (void))

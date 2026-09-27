@@ -29,7 +29,7 @@
 
 // -----------------------------------------------------------------
 #pragma convert(1252)
-static void   nox_EncodeJsonStream (PSTREAM p , PUCHAR in)
+void   nox_EncodeJsonStream (PSTREAM p , PUCHAR in)
 {
 
    while (*in) {
