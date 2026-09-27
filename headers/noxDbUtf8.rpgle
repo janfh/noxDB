@@ -213,6 +213,21 @@ Dcl-PR nox_ParseFile Pointer extproc(*CWIDEN:'nox_ParseFile');
 End-PR;
 
 ///
+// Parse file descriptor
+//
+// Reads JSON or XML from a file descriptor (socket, stdin, pipe) and
+// parses it. The entire content is buffered internally; the caller
+// retains ownership of the fd.
+//
+// @param (input) File descriptor to read from
+// @return Pointer to the root node of the noxDB object graph or
+//         *null if nothing was read.
+///
+Dcl-PR nox_ParseFd Pointer extproc(*CWIDEN:'nox_ParseFd');
+  fd             Int(10) value;
+End-PR;
+
+///
 // Parse string
 //
 // Parses a JSON or XML string.
