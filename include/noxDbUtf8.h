@@ -505,6 +505,7 @@ void nox_WriteCsvStmf (
 #pragma descriptor ( void nox_WriteCsvStmf      (void))
 
 PNOXNODE  nox_ParseFile  (PUCHAR FileName);
+PNOXNODE  nox_ParseFd  (int fd);
 PNOXNODE  nox_ParseString  (PUCHAR Buf);
 PNOXNODE  nox_NewObject (void);
 PNOXNODE  nox_NewArray (void);
