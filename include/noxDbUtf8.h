@@ -498,6 +498,7 @@ void nox_WriteJsonStmf (
 
 void nox_WriteJsonFd (PNOXNODE pNode, int fd);
 
+typedef void (*NOX_DATAGEN)();
 NOX_DATAGEN nox_DataGenFd (int fd);
 
 void nox_WriteCsvStmf (
